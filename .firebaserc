@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "trainingsjournal-409a8": {
+      "hosting": {
+        "trainingsjournal": [
+          "trainingsjournal-409a8"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "trainingsjournal-409a8"
+  }
+}
