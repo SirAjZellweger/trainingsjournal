@@ -1,17 +1,42 @@
-<div class="formGroup">
-  <button type="button" (click)="loginWithGoogle()">
-    Log in with Google
-  </button>
-</div>
+<mat-toolbar>
+  <div class="menu-icon-and-app-title">
+    <button *ngIf="(user$ | async)" mat-icon-button (click)="drawer.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <a mat-button [routerLink]="'/'">Trainingsjournal</a>
+  </div>
+  <div>
+    <a mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>person</mat-icon>
+    </a>
+    <mat-menu #menu="matMenu">
+      <a *ngIf="!(user$ | async)" mat-menu-item [routerLink]="'/login'">Anmelden</a>
+      <button *ngIf="(user$ | async)" mat-menu-item (click)="signOut()">Abmelden</button>
+    </mat-menu>
 
-<div class="formGroup">
-  <button type="button" (click)="signOut()">
-    Sign Out
-  </button>
-</div>
+    <a mat-icon-button *ngIf="(user$ | async)" [routerLink]="'/settings'" routerLinkActive #rlasettings="routerLinkActive" [color]="rlasettings.isActive ? 'primary' : undefined">
+      <mat-icon>settings</mat-icon>
+    </a>
+  </div>
+</mat-toolbar>
 
-<div *ngIf="user$ | async as user">
-  <p>{{user.id}}</p>
-  <p>{{user.email}}</p>
-  <p>{{user.emailVerified}}</p>
-</div>
+<mat-drawer-container [hasBackdrop]="true">
+  <mat-drawer #drawer [mode]="'over'">
+    <mat-nav-list>
+      <a mat-list-item [routerLink]="'/trainings'" routerLinkActive #rla1="routerLinkActive" [activated]="rla1.isActive" (click)="drawer.close()">{{ 'Trainings' }}</a>
+      <a mat-list-item [routerLink]="'/auswertungen'" routerLinkActive #rla2="routerLinkActive" [activated]="rla2.isActive" (click)="drawer.close()">{{ 'Auswertungen' }}</a>
+    </mat-nav-list>
+  </mat-drawer>
+  <mat-drawer-content>
+    <mat-toolbar [color]="'primary'">
+      <button mat-icon-button (click)="drawer.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span>Einstellungen</span>
+    </mat-toolbar>
+
+    <div class="page">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-drawer-content>
+</mat-drawer-container>

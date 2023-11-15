@@ -1,0 +1,23 @@
+mat-toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+
+  .menu-icon-and-app-title {
+    display: flex;
+    align-items: center;
+  }
+}
+
+mat-drawer-container{
+  margin-top: 56px;
+}
+
+.page {
+  // padding: 3rem;
+  min-height: calc(100vh - 56px);
+}

@@ -1,0 +1,20 @@
+<mat-drawer-container [hasBackdrop]="true">
+  <mat-drawer #drawer [mode]="'over'">
+    <mat-nav-list>
+      <a mat-list-item [routerLink]="'setting1'" routerLinkActive #rla1="routerLinkActive" [activated]="rla1.isActive" (click)="drawer.close()">{{ 'Setting 1' }}</a>
+      <a mat-list-item [routerLink]="'setting2'" routerLinkActive #rla2="routerLinkActive" [activated]="rla2.isActive" (click)="drawer.close()">{{ 'Setting 2' }}</a>
+    </mat-nav-list>
+  </mat-drawer>
+  <mat-drawer-content>
+    <mat-toolbar [color]="'primary'">
+      <button mat-icon-button (click)="drawer.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span>Einstellungen</span>
+    </mat-toolbar>
+
+    {{settings$ | async}}
+
+    <router-outlet></router-outlet>
+  </mat-drawer-content>
+</mat-drawer-container>

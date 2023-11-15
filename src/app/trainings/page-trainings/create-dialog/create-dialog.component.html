@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>Training erstellen</h1>
+<div class="dialog-content" mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Name</mat-label>
+    <input matInput cdkFocusInitial [formControl]="nameFormControl" required>
+    <mat-error *ngIf="nameFormControl.invalid">Pflichtfeld</mat-error>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-stroked-button mat-dialog-close [color]="'primary'">Abbrechen</button>
+  <button mat-raised-button [color]="'primary'" [disabled]="!(formControlIsValid$ | async)" (click)="create()">Erstellen</button>
+</div>

@@ -1,15 +1,30 @@
 import { Component, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { NgSwitch, NgSwitchDefault, NgSwitchCase, CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { AuthService } from './auth/auth.service';
-import { take } from 'rxjs';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
     standalone: true,
-    imports: [CommonModule, RouterOutlet]
+    imports: [
+      CommonModule, 
+      RouterModule,
+      MatToolbarModule, 
+      MatIconModule, 
+      MatButtonModule, 
+      MatMenuModule, 
+      MatSidenavModule, 
+      MatListModule
+    ]
 })
 export class AppComponent {
   private readonly authService = inject(AuthService);
@@ -17,11 +32,7 @@ export class AppComponent {
 
   title = 'trainingsjournal';
 
-  protected loginWithGoogle(): void {
-    this.authService.signInWithGoogle().pipe(take(1)).subscribe();
-  }
-
   protected signOut(): void {
-    this.authService.signOut().pipe(take(1)).subscribe();
+    this.authService.signOut().subscribe();
   }
 }

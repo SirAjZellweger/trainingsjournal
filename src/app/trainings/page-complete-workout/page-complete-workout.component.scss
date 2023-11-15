@@ -1,0 +1,40 @@
+::ng-deep {
+  .mat-horizontal-stepper-header-container {
+    overflow-x: auto;
+  }
+
+  .mat-horizontal-stepper-header {
+    min-width: fit-content;
+  }
+
+  .mat-horizontal-stepper-wrapper .mat-horizontal-content-container {
+    padding: 12px;
+  }
+
+  .mat-mdc-text-field-wrapper {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+
+  .mat-mdc-table {
+    .mdc-data-table__cell, .mdc-data-table__header-cell {
+      padding: 12px;
+    }
+  }
+}
+
+.mat-column-set {
+  max-width: 24px;
+}
+
+.mat-column-weight {
+  max-width: 50px;
+}
+
+mat-form-field {
+  width: 100%
+}

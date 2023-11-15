@@ -1,0 +1,25 @@
+<div *ngIf="workout$ | async as workout">
+  <p>{{workout.name}}</p>
+
+  <mat-accordion class="example-headers-align">
+    <mat-expansion-panel *ngFor="let exercise of exercises$ | async; let first = first; let last = last" [expanded]="step === exercise.data().order" (opened)="setStep(exercise.data().order)" hideToggle>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{exercise.data().name ?? "Übungs Bez."}}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+  
+      <mat-form-field>
+        <mat-label>Übungs Bez.</mat-label>
+        <input matInput>
+      </mat-form-field>
+  
+      <app-exercise-table [data]="exercise.data()"></app-exercise-table>
+
+      <mat-action-row>
+        <button *ngIf="!first" mat-button color="warn" (click)="prevStep()">Previous</button>
+        <button *ngIf="!last" mat-button color="primary" (click)="nextStep()">Next</button>
+      </mat-action-row>
+    </mat-expansion-panel>  
+  </mat-accordion>
+</div>
