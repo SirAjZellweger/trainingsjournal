@@ -47,6 +47,7 @@ export class CreateOrEditDialogComponent {
       take(1),
       filter((isValid) => isValid),
       switchMap(() => this.exerciseService.createExercise(this.nameFormControl.value as string, this.dialogData.order)),
+      take(1),
       tap(() => this.snackBar.open('Übung "' + this.nameFormControl.value + '" hinzugefügt')),
       tap(exerciseId => this.dialogRef.close(exerciseId))
     )

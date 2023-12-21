@@ -24,3 +24,14 @@ span.kg {
 .workout-form mat-form-field {
   width: 100%;
 }
+
+::ng-deep mat-toolbar {
+  justify-content: space-between;
+}
+
+.content {
+  padding: 0.5rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}

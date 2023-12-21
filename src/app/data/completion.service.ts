@@ -5,12 +5,15 @@ import { ActivatedRoute } from "@angular/router";
 import { WorkoutService } from "./workout.service";
 import { DocumentReference, QueryDocumentSnapshot } from "@angular/fire/compat/firestore";
 import { Exercise } from "./interfaces/exercise";
+import { UserDataService } from "./user-data.service";
+import { Workout } from "./interfaces/workout";
 
 @Injectable({
   providedIn: 'root',
 })
 export class CompletionService {
-  private readonly workoutService = inject(WorkoutService)
+  private readonly workoutService = inject(WorkoutService);
+  private readonly userDataService = inject(UserDataService);
 
   private readonly completionsSubject = new BehaviorSubject<QueryDocumentSnapshot<Completion>[]>([]);
 
@@ -53,7 +56,7 @@ export class CompletionService {
 
   public fetchCompletions(): Observable<QueryDocumentSnapshot<Completion>[]> {
     return this.workoutService.getWorkout().pipe(
-      switchMap(workout => workout.collection<Completion>('completions').get()),
+      switchMap(workout => workout.collection<Completion>('completions').ref.orderBy("end", "desc").get()),
       map(completions => completions.docs),
       tap(completions => this.completionsSubject.next(completions)),
       switchMap(() => this.getCompletions())
@@ -62,6 +65,27 @@ export class CompletionService {
 
   public getCompletions(): Observable<QueryDocumentSnapshot<Completion>[]> {
     return this.completionsSubject.asObservable();
+  }
+
+  public getCompletionCount(key: string): Observable<number> {
+    return this.userDataService.getUserData().pipe(
+      switchMap(userData => userData.collection<Workout>('workouts').doc(key).collection<Completion>('completions').get()),
+      map(completions => completions.size),
+    );
+  }
+
+  public getLastCompletion(key: string): Observable<QueryDocumentSnapshot<Completion>[]> {
+    return this.userDataService.getUserData().pipe(
+      switchMap(userData => userData.collection<Workout>('workouts').doc(key).collection<Completion>('completions').ref.orderBy("end", "desc").limit(1).get()),
+      map(completion => completion.docs)
+    );
+  }
+
+  public fetchCompletionsWithId(key: string): Observable<QueryDocumentSnapshot<Completion>[]> {
+    return this.userDataService.getUserData().pipe(
+      switchMap(userData => userData.collection<Workout>('workouts').doc(key).collection<Completion>('completions').get()),
+      map(completions => completions.docs),
+    );
   }
 
   public createCompletion(completion: Completion): Observable<void> {

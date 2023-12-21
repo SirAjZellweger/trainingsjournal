@@ -12,8 +12,8 @@
     <mat-menu #menu="matMenu">
       <!-- <a *ngIf="!(user$ | async)" mat-menu-item [routerLink]="'/login'">Anmelden</a> -->
       <button  mat-menu-item (click)="signOut()">Abmelden</button>
-      <mat-divider></mat-divider>
-      <button  mat-menu-item (click)="openDeleteDialog()">Konto löschen</button>
+      <!-- <mat-divider></mat-divider>
+      <button  mat-menu-item (click)="openDeleteDialog()">Konto löschen</button> -->
     </mat-menu>
 
     <!-- <a mat-icon-button *ngIf="(user$ | async)" [routerLink]="'/settings'" routerLinkActive #rlasettings="routerLinkActive" [color]="rlasettings.isActive ? 'primary' : undefined">

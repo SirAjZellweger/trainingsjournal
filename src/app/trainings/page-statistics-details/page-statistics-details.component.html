@@ -2,6 +2,7 @@
   <mat-toolbar [color]="'primary'">
       <button mat-icon-button (click)="navigateBack()"><mat-icon>arrow_back</mat-icon></button>
       <span>{{(completion$ | async)?.start.toDate() | date : 'd.M.yyyy'}}</span>
+      <span style="width: 48px;"></span>
   </mat-toolbar>
 
   <div class="content">
@@ -14,9 +15,8 @@
         </mat-expansion-panel-header>
         <form class="workout-form" [formGroup]="workoutForm">
           <mat-form-field>
-            <mat-label>Pause</mat-label>
+            <mat-label>Pause in Sek.</mat-label>
             <input matInput [formControlName]="'pause'">
-            <span matTextSuffix>Sek.</span>
           </mat-form-field>
         </form>
       </mat-expansion-panel>  
@@ -34,51 +34,45 @@
               {{exercise.data().name}}
 
               <ng-container *ngIf="getDiffernceToLastCompletion(exercise.data()) | async as dLastC">
-                <ng-container *ngIf="dLastC >= 0">
-                  <span class="positive kg">+{{dLastC}}kg</span>
+                <ng-container *ngIf="(getDiffernceToLastCompletion(exercise.data()) | async)! >= 0">
+                  <span class="positive kg">+{{getDiffernceToLastCompletion(exercise.data()) | async}}kg</span>
                 </ng-container>
                 
-                <ng-container *ngIf="dLastC < 0">
-                  <span class="negative kg">{{dLastC}}kg</span>
+                <ng-container *ngIf="(getDiffernceToLastCompletion(exercise.data()) | async)! < 0">
+                  <span class="negative kg">{{getDiffernceToLastCompletion(exercise.data()) | async}}kg</span>
                 </ng-container>
               </ng-container>
 
-              <ng-container *ngIf="getDiffernceToFirstCompletion(exercise.data()) | async as dFirstC">
-                <ng-container *ngIf="dFirstC >= 0">
-                  <span class="positive kg">+{{dFirstC}}kg</span>
-                </ng-container>
-                
-                <ng-container *ngIf="dFirstC < 0">
-                  <span class="negative kg">{{dFirstC}}kg</span>
-                </ng-container>
+              <ng-container *ngIf="(getDiffernceToFirstCompletion(exercise.data()) | async)! >= 0">
+                <span class="positive kg">+{{getDiffernceToFirstCompletion(exercise.data()) | async}}kg</span>
+              </ng-container>
+              
+              <ng-container *ngIf="(getDiffernceToFirstCompletion(exercise.data()) | async)! < 0">
+                <span class="negative kg">{{getDiffernceToFirstCompletion(exercise.data()) | async}}kg</span>
               </ng-container>
             </mat-panel-title>
           </mat-expansion-panel-header>
 
           <div class="label-value">
             <span>Unterschied zu letztem Training:</span>
-            <ng-container *ngIf="getDiffernceToLastCompletion(exercise.data()) | async as dLastC">
-              <ng-container *ngIf="dLastC >= 0">
-                <span class="positive kg">+{{dLastC}}kg</span>
+              <ng-container *ngIf="(getDiffernceToLastCompletion(exercise.data()) | async)! >= 0">
+                <span class="positive kg">+{{getDiffernceToLastCompletion(exercise.data()) | async}}kg</span>
               </ng-container>
               
-              <ng-container *ngIf="dLastC < 0">
-                <span class="negative kg">{{dLastC}}kg</span>
+              <ng-container *ngIf="(getDiffernceToLastCompletion(exercise.data()) | async)! < 0">
+                <span class="negative kg">{{getDiffernceToLastCompletion(exercise.data()) | async}}kg</span>
               </ng-container>
-            </ng-container>
           </div>
 
           <div class="label-value">
             <span>Unterschied zu erstem Training:</span>
-            <ng-container *ngIf="getDiffernceToFirstCompletion(exercise.data()) | async as dFirstC">
-              <ng-container *ngIf="dFirstC >= 0">
-                <span class="positive kg">+{{dFirstC}}kg</span>
+              <ng-container *ngIf="(getDiffernceToFirstCompletion(exercise.data()) | async)! >= 0">
+                <span class="positive kg">+{{getDiffernceToFirstCompletion(exercise.data()) | async}}kg</span>
               </ng-container>
               
-              <ng-container *ngIf="dFirstC < 0">
-                <span class="negative kg">{{dFirstC}}kg</span>
+              <ng-container *ngIf="(getDiffernceToFirstCompletion(exercise.data()) | async)! < 0">
+                <span class="negative kg">{{getDiffernceToFirstCompletion(exercise.data()) | async}}kg</span>
               </ng-container>
-            </ng-container>
           </div>
 
           <div class="exercise-form">

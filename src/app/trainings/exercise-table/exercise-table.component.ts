@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit } from "@angular/core";
-import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule, Validators } from "@angular/forms";
+import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, FormsModule, NG_VALIDATORS, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors, Validator, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
@@ -28,10 +28,15 @@ import { BehaviorSubject, ReplaySubject, Subscription, map, share, startWith, ta
       provide: NG_VALUE_ACCESSOR, 
       useExisting: ExerciseTableComponent,
       multi: true     
-    }
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: ExerciseTableComponent,
+      multi: true,
+    }  
   ]    
 })
-export class ExerciseTableComponent implements ControlValueAccessor, OnInit, OnDestroy {
+export class ExerciseTableComponent implements ControlValueAccessor, OnInit, OnDestroy, Validator {
   protected readonly form = new FormGroup({
     sets: new FormArray([])
   });
@@ -53,8 +58,9 @@ export class ExerciseTableComponent implements ControlValueAccessor, OnInit, OnD
 
   protected isDisabled$ = new BehaviorSubject<boolean>(false);
 
-  public onChange: any = (sets: any[]) => {}
-  public onTouch: any = () => {}
+  public onChange: any = (sets: any[]) => {};
+  public onTouch: any = () => {};
+  public onValidation: any = () => {};
 
   private readonly subs = new Subscription();
 
@@ -62,7 +68,8 @@ export class ExerciseTableComponent implements ControlValueAccessor, OnInit, OnD
     this.subs.add(
       this.form.valueChanges.pipe(
         tap(() => this.onTouch()),
-        tap(() => this.onChange(this.form.getRawValue().sets))
+        tap(() => this.onChange(this.form.getRawValue().sets)),
+        tap(() => this.onValidation()),
       )
       .subscribe()
     );
@@ -89,17 +96,26 @@ export class ExerciseTableComponent implements ControlValueAccessor, OnInit, OnD
   }
 
   writeValue(value: any[]){
-    value.forEach(() => this.addSet())
+    value.forEach(() => this.addSet());
     const sets = {sets: value as never[]};
     this.form.setValue(sets, {emitEvent: false});
+    this.onTouch();
   }
 
   registerOnTouched(fn: any){
-    this.onTouch = fn
+    this.onTouch = fn;
   }
 
   registerOnChange(fn: any){
-    this.onChange = fn
+    this.onChange = fn;
+  }
+
+  validate(): ValidationErrors | null {
+    return this.form.valid ? null : {'values missing': false};
+  }
+
+  registerOnValidatorChange(fn: any): void {
+    this.onValidation = fn;
   }
 
   public setDisabledState?(isDisabled: boolean): void {
@@ -109,6 +125,7 @@ export class ExerciseTableComponent implements ControlValueAccessor, OnInit, OnD
       this.form.disable();
     } else {
       this.form.enable();
+      this.form.controls.sets.controls.forEach(s => (s as FormGroup).controls['order'].disable());
     }
   }
 

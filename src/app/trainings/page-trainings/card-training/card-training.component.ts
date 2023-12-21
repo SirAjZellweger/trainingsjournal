@@ -15,6 +15,7 @@ import { ExerciseService } from "src/app/data/exercise.service";
 import { Exercise } from "src/app/data/interfaces/exercise";
 import { ObserversModule } from "@angular/cdk/observers";
 import { DeleteDialogComponent } from "../delete-dialog/delete-dialog.component";
+import { CompletionService } from "src/app/data/completion.service";
 
 @Component({
   selector: 'app-card-training',
@@ -34,11 +35,13 @@ import { DeleteDialogComponent } from "../delete-dialog/delete-dialog.component"
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     WorkoutService,
+    CompletionService,
   ]
 })
 export class CardTrainingComponent {
   private readonly dialog = inject(MatDialog);
   private readonly workoutService = inject(WorkoutService);
+  private readonly completionService = inject(CompletionService);
   private readonly injector = inject(Injector);
 
   @Input() set workout(workout: QueryDocumentSnapshot<Workout>) {
@@ -52,6 +55,43 @@ export class CardTrainingComponent {
   protected readonly exerciseCount$ = this.workout$.pipe(
     switchMap(workout => this.workoutService.getExerciseCount(workout.id)),
   );
+
+  protected readonly completionCount$ = this.workout$.pipe(
+    switchMap(workout => this.completionService.getCompletionCount(workout.id)),
+  );
+
+  protected readonly lastCompletion$ = this.workout$.pipe(
+    switchMap(workout => this.completionService.getLastCompletion(workout.id)),
+    map(completions => completions.length > 0 ? completions[0].data().start.toDate() : null)
+  );
+
+  protected readonly avarageDuration$ = this.workout$.pipe(
+    switchMap(workout => this.completionService.fetchCompletionsWithId(workout.id)),
+    map(completions => {
+      if (completions.length == 0) {
+        return null;
+      }
+
+      let totalTime = 0;
+
+      completions.forEach(c => totalTime += c.data().end.toDate().getTime() - c.data().start.toDate().getTime());
+
+      const averageTime = totalTime / completions.length;
+      const hours = Math.floor(averageTime / (1000 * 60 * 60));
+      const minutes = Math.floor((averageTime % (1000 * 60 * 60)) / (1000 * 60));
+
+      return `${hours}h ${minutes}min`;
+    })
+  );
+
+  protected getDuration(startDate: Date, endDate: Date): string {
+    const timeDiffMs = endDate.getTime() - startDate.getTime();
+
+    const hours = Math.floor(timeDiffMs / (1000 * 60 * 60));
+    const minutes = Math.floor((timeDiffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+    return `${hours}h ${minutes}min`;
+  }
 
   protected openDeleteDialog(workout: QueryDocumentSnapshot<Workout>): void {
     this.dialog.open(DeleteDialogComponent, {

@@ -26,9 +26,13 @@
     }
   }
 
-  mat-toolbar span{
-    text-overflow: ellipsis;
-    overflow: hidden;
+  mat-toolbar {
+    justify-content: space-between;
+    
+    span {
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
   }
 }
 
@@ -60,4 +64,10 @@ mat-form-field {
   .next {
     grid-column-start: 2;
   }
+}
+
+.page {
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }

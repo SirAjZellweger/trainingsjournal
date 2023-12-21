@@ -20,9 +20,8 @@
           </mat-form-field>
 
           <mat-form-field>
-            <mat-label>Pause</mat-label>
+            <mat-label>Pause in Sek.</mat-label>
             <input matInput [formControlName]="'pause'">
-            <span matTextSuffix>Sek.</span>
           </mat-form-field>
         </form>
       </mat-expansion-panel>  
@@ -34,8 +33,6 @@
       <mat-accordion class="example-headers-align" [formArrayName]="'exercises'">
         <mat-expansion-panel 
           *ngFor="let exercise of exercises$ | async; let first = first; let last = last; index as i" 
-          [expanded]="step === exercise.data().order" 
-          (opened)="setStep(exercise.data().order)" 
           [formGroupName]="i">
           <mat-expansion-panel-header>
             <mat-panel-title>

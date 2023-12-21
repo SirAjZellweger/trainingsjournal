@@ -10,15 +10,15 @@
 
 .content {
   padding: .5rem;
-
-  mat-accordion {
-    margin-bottom: 32px;
-  }
+  padding-bottom: 6rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .workout-form {
   display: grid;
-  grid-template-columns: 70% 30%;
+  grid-template-columns: calc(60% - 6px) calc(40% - 6px);
   column-gap: 12px;
 }
 

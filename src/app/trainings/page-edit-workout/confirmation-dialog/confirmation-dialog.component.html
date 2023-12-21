@@ -1,0 +1,9 @@
+<h1 mat-dialog-title>Änderungen verwerfen?</h1>
+<div class="dialog-content" mat-dialog-content>
+  Bist du sicher das du die Seite verlassen möchtest?
+  Nicht gespeicherte Änderungen gehen verloren.
+</div>
+<div mat-dialog-actions>
+  <button mat-stroked-button mat-dialog-close [color]="'primary'">Abbrechen</button>
+  <button mat-raised-button [color]="'warn'" (click)="leave()">Verlassen</button>
+</div>

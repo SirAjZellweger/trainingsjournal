@@ -7,7 +7,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import {MatChipsModule} from '@angular/material/chips';
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
-import { ReplaySubject, combineLatest, interval, map, merge, of, share, startWith, switchMap, take, takeWhile, tap } from "rxjs";
+import { Observable, ReplaySubject, combineLatest, interval, map, merge, of, share, startWith, switchMap, take, takeWhile, tap } from "rxjs";
 import { ExerciseTableComponent } from "../exercise-table/exercise-table.component";
 import { WorkoutService } from "src/app/data/workout.service";
 import { ExerciseService } from "src/app/data/exercise.service";
@@ -18,6 +18,10 @@ import { CompletionService } from "src/app/data/completion.service";
 import { Completion } from "src/app/data/interfaces/completion";
 import { MatCardModule } from "@angular/material/card";
 import { MatDividerModule } from "@angular/material/divider";
+import { ComponentCanDeactivate } from "src/app/app.config";
+import { MatDialog } from "@angular/material/dialog";
+import { ConfirmationDialogComponent } from "../page-edit-workout/confirmation-dialog/confirmation-dialog.component";
+import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
 
 interface Pause {
   length: number;
@@ -44,7 +48,9 @@ interface Pause {
     MatToolbarModule,
     ExerciseTableComponent,
     MatCardModule,
-    MatDividerModule
+    MatDividerModule,
+    ConfirmationDialogComponent,
+    MatSnackBarModule
   ],
   providers: [
     CompletionService,
@@ -52,12 +58,14 @@ interface Pause {
     WorkoutService,
   ]
 })
-export class PageCompleteWorkoutComponent {
+export class PageCompleteWorkoutComponent implements ComponentCanDeactivate {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly workoutService = inject(WorkoutService);
   private readonly exerciseService = inject(ExerciseService);
   private readonly completionService = inject(CompletionService);
+  private readonly dialog = inject(MatDialog);
+  private readonly snackBar = inject(MatSnackBar)
 
   protected readonly completionForm = new FormGroup({
     start: new FormControl(new Date()),
@@ -111,16 +119,19 @@ export class PageCompleteWorkoutComponent {
         return merge(...edits)
       }),
       take(1),
+      tap(() => this.snackBar.open('Training abgeschlossen')),
+      tap(() => this.completionForm.markAsPristine()),
       tap(() => this.router.navigate(['/trainings'])),
     ).subscribe();
   }
 
-  // protected getExerciseFormGroup(index: number): FormGroup {
-  //   const test = this.completionForm.controls.exercises.controls[index] as never;
+  public canDeactivate(): Observable<boolean> {
+    if (!this.completionForm.dirty) {
+      return of(true)
+    }
 
-
-  //   return this.completionForm.controls.exercises.controls[index];
-  // }
-
-  // TOOD set completed state of step
+    return this.dialog.open(ConfirmationDialogComponent).afterClosed().pipe(
+      switchMap(leave => leave ? of(true) : of(false))
+    );
+  }
 }

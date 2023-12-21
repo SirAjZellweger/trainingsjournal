@@ -3,7 +3,11 @@
     <mat-card-title>{{workout.data().name}}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    Anzahl Übungen: {{exerciseCount$ | async}}
+    <p style="margin-top: 6px;">Anzahl Übungen: {{exerciseCount$ | async}}</p>
+    <p>Anzahl Durchführungen: {{completionCount$ | async}}</p>
+    <p>Letzte Durchführungen: <span *ngIf="lastCompletion$ | async as lc; else noValue">{{lc  | date : 'd.M.yyyy'}}</span></p>
+    <p>Durchschnittliche Dauer: <span *ngIf="avarageDuration$ | async as ad; else noValue">{{ad}}</span></p>
+    <ng-template #noValue>-</ng-template>
     <mat-divider></mat-divider>
   </mat-card-content>
   <mat-card-actions [align]="'end'">

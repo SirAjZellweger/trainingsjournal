@@ -3,17 +3,14 @@
     <mat-toolbar [color]="'primary'">
       <a mat-icon-button [routerLink]="'/trainings'"><mat-icon>arrow_back</mat-icon></a>
       <span>"{{workout.name}}" durchführen</span>
+      <span style="width: 48px"></span>
     </mat-toolbar>
 
-    <!-- <h2>{{workout.name}}</h2> -->
-
-    <mat-stepper labelPosition="bottom" #stepper [formArrayName]="'exercises'">
-      <mat-step 
+    <mat-stepper class="page" labelPosition="bottom" #stepper [formArrayName]="'exercises'">
+      <mat-step
         *ngFor="let exercise of exercises$ | async; let first = first; let last = last; index as i"
         [label]="exercise.data().name"
         [formGroupName]="i">
-
-        <!-- [stepControl]="getExerciseFormGroup(i)" -->
 
         <div class="exercise-form">
           <mat-form-field>
@@ -26,13 +23,19 @@
             <input matInput [formControlName]="'rom'">
           </mat-form-field>
 
-          <ng-container *ngIf="pause$ | async as pause">
-            <button *ngIf="pause.remainingTime" mat-fab extended [color]="'accent'" (click)="pauseIsRunning.emit(!pause.isRunning)">
+          <ng-container *ngIf="pause$ | async as pause; else placeholderPauseButton">
+            <button *ngIf="pause.remainingTime; else placeholderPauseButton" mat-fab extended [color]="'accent'" (click)="pauseIsRunning.emit(!pause.isRunning)">
               <mat-icon *ngIf="!pause.isRunning">schedule</mat-icon>
               <mat-icon *ngIf="pause.isRunning">restore</mat-icon>
               {{pause.remainingTime}} Sek.
             </button>
           </ng-container>
+          <ng-template #placeholderPauseButton>
+            <button disabled mat-fab extended [color]="'accent'">
+              <mat-icon>schedule</mat-icon>
+              0 Sek.
+            </button>
+          </ng-template>
         </div>
 
         <app-exercise-table [formControlName]="'sets'" [placholderData]="exercise.data().sets"></app-exercise-table>

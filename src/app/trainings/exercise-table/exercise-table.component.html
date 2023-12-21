@@ -23,7 +23,7 @@
       <th mat-header-cell *matHeaderCellDef> Gewicht </th>
       <td mat-cell *matCellDef="let index = index" [formGroupName]="index">
         <mat-form-field>
-          <input matInput [formControlName]="'weight'" [placeholder]="(placeholderData$ | async)?.length ? (placeholderData$ | async)![index]?.weight : ''">
+          <input matInput type="number" [formControlName]="'weight'" [placeholder]="(placeholderData$ | async)?.length ? (placeholderData$ | async)![index]?.weight : ''">
           <span matTextSuffix>kg</span>
         </mat-form-field>
       </td>
@@ -34,7 +34,7 @@
       <th mat-header-cell *matHeaderCellDef> Wiederholungen </th>
       <td mat-cell *matCellDef="let index = index" [formGroupName]="index">
         <mat-form-field>
-          <input matInput [formControlName]="'reps'" [placeholder]="(placeholderData$ | async)?.length ? (placeholderData$ | async)![index]?.reps : ''">
+          <input matInput type="number" [formControlName]="'reps'" [placeholder]="(placeholderData$ | async)?.length ? (placeholderData$ | async)![index]?.reps : ''">
         </mat-form-field>
       </td>
       <td style="display: none;" mat-footer-cell *matFooterCellDef></td>
