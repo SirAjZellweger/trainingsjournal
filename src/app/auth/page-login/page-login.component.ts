@@ -4,7 +4,7 @@ import { AuthService } from "../auth.service";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { ReplaySubject, filter, map, share, startWith, switchMap, take, tap } from "rxjs";
+import { ReplaySubject, catchError, filter, map, of, share, startWith, switchMap, take, tap } from "rxjs";
 import { Router } from "@angular/router";
 import { AbstractControl, FormControl, FormGroup, FormGroupDirective, NgForm, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -34,6 +34,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     MatSnackBarModule,
     MatFormFieldModule,
     MatInputModule,
+    MatDividerModule
   ]
 })
 export class PageLoginComponent {
@@ -81,7 +82,9 @@ export class PageLoginComponent {
       switchMap(() => this.authService.signInWithEmailAndPassword(this.loginForm.controls.email.value, this.loginForm.controls.password.value)),
       take(1),
       tap(() => this.snackBar.open('Erfolgreich angemeldet')),
-      tap(() => this.router.navigate(['']))
+      tap(() => this.router.navigate([''])),
+      catchError(e => of(null).pipe(tap(() => this.snackBar.open('Die Email oder das Passwort ist falsch')))),
+      
     ).subscribe();
   }
 

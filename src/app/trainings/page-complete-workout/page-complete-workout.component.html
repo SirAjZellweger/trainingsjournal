@@ -1,74 +1,48 @@
-<h1>Push</h1>
-<mat-stepper labelPosition="bottom" #stepper>
-  <mat-step [label]="'Pushups'" optional>
-    <table mat-table [dataSource]="pushups" class="mat-elevation-z8">
-      <ng-container matColumnDef="set">
-        <th mat-header-cell *matHeaderCellDef> # </th>
-        <td mat-cell *matCellDef="let element"> {{element.set}} </td>
-      </ng-container>
-    
-      <ng-container matColumnDef="weight">
-        <th mat-header-cell *matHeaderCellDef> Gewicht </th>
-        <td mat-cell *matCellDef="let element">
+<div *ngIf="workout$ | async as workout">
+  <form [formGroup]="completionForm">
+    <mat-toolbar [color]="'primary'">
+      <a mat-icon-button [routerLink]="'/trainings'"><mat-icon>arrow_back</mat-icon></a>
+      <span>"{{workout.name}}" durchführen</span>
+    </mat-toolbar>
+
+    <!-- <h2>{{workout.name}}</h2> -->
+
+    <mat-stepper labelPosition="bottom" #stepper [formArrayName]="'exercises'">
+      <mat-step 
+        *ngFor="let exercise of exercises$ | async; let first = first; let last = last; index as i"
+        [label]="exercise.data().name"
+        [formGroupName]="i">
+
+        <!-- [stepControl]="getExerciseFormGroup(i)" -->
+
+        <div class="exercise-form">
           <mat-form-field>
-            <input matInput value="40">
-            <span matSuffix>kg</span>
-          </mat-form-field> 
-        </td>
-      </ng-container>
-    
-      <ng-container matColumnDef="reps">
-        <th mat-header-cell *matHeaderCellDef> Wiederholungen </th>
-        <td mat-cell *matCellDef="let element"> {{element.reps}} </td>
-      </ng-container>
+            <mat-label>Tempo</mat-label>
+            <input matInput [formControlName]="'tempo'">
+          </mat-form-field>
 
-      <ng-container matColumnDef="pause">
-        <th mat-header-cell *matHeaderCellDef> Pause </th>
-        <td mat-cell *matCellDef="let element"> {{element.pause}} </td>
-      </ng-container>
-    
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
+          <mat-form-field>
+            <mat-label>ROM</mat-label>
+            <input matInput [formControlName]="'rom'">
+          </mat-form-field>
 
-    <button mat-icon-button>
-      <mat-icon>remove</mat-icon>
-    </button>
-    <mat-chip>Sätze</mat-chip>
-    <button mat-icon-button>
-      <mat-icon>add</mat-icon>
-    </button>
+          <ng-container *ngIf="pause$ | async as pause">
+            <button *ngIf="pause.remainingTime" mat-fab extended [color]="'accent'" (click)="pauseIsRunning.emit(!pause.isRunning)">
+              <mat-icon *ngIf="!pause.isRunning">schedule</mat-icon>
+              <mat-icon *ngIf="pause.isRunning">restore</mat-icon>
+              {{pause.remainingTime}} Sek.
+            </button>
+          </ng-container>
+        </div>
 
-    <button mat-button matStepperNext>Next</button>
-  </mat-step>
-  <mat-step [label]="'Squats'" optional>
-      <div>
-        <button mat-button matStepperPrevious>Back</button>
-        <button mat-button matStepperNext>Next</button>
-      </div>
-  </mat-step>
-  <mat-step>
-    <ng-template matStepLabel>Done</ng-template>
-    <p>You are now done.</p>
-    <div>
-      <button mat-button matStepperPrevious>Back</button>
-      <button mat-button (click)="stepper.reset()">Reset</button>
-    </div>
-  </mat-step>
-  <mat-step>
-    <ng-template matStepLabel>Done</ng-template>
-    <p>You are now done.</p>
-    <div>
-      <button mat-button matStepperPrevious>Back</button>
-      <button mat-button (click)="stepper.reset()">Reset</button>
-    </div>
-  </mat-step>
-  <mat-step>
-    <ng-template matStepLabel>Done</ng-template>
-    <p>You are now done.</p>
-    <div>
-      <button mat-button matStepperPrevious>Back</button>
-      <button mat-button (click)="stepper.reset()">Reset</button>
-    </div>
-  </mat-step>
-</mat-stepper>
+        <app-exercise-table [formControlName]="'sets'" [placholderData]="exercise.data().sets"></app-exercise-table>
+
+        <div class="navigation">
+          <button *ngIf="!first" mat-stroked-button [color]="'primary'" matStepperPrevious>Zurück</button>
+          <button *ngIf="!last" class="next" mat-raised-button [color]="'primary'" matStepperNext>Weiter</button>
+          <button *ngIf="last" class="next" mat-raised-button [color]="'primary'" (click)="submit()">Abschliessen</button>
+        </div>
+      </mat-step>
+    </mat-stepper>
+  </form>
+</div>

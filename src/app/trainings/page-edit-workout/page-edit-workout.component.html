@@ -1,25 +1,82 @@
 <div *ngIf="workout$ | async as workout">
-  <p>{{workout.name}}</p>
+  <mat-toolbar [color]="'primary'">
+      <a mat-icon-button [routerLink]="'/trainings'"><mat-icon>arrow_back</mat-icon></a>
+      <span>Training bearbeiten</span>
+      <button mat-icon-button (click)="submit()" [disabled]="!!!(canSubmit$ | async)"><mat-icon>save</mat-icon></button>
+  </mat-toolbar>
 
-  <mat-accordion class="example-headers-align">
-    <mat-expansion-panel *ngFor="let exercise of exercises$ | async; let first = first; let last = last" [expanded]="step === exercise.data().order" (opened)="setStep(exercise.data().order)" hideToggle>
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          {{exercise.data().name ?? "Übungs Bez."}}
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-  
-      <mat-form-field>
-        <mat-label>Übungs Bez.</mat-label>
-        <input matInput>
-      </mat-form-field>
-  
-      <app-exercise-table [data]="exercise.data()"></app-exercise-table>
+  <div class="content">
+    <mat-accordion class="example-headers-align">
+      <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{workout.name}}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <form class="workout-form" [formGroup]="workoutForm">
+          <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput required [formControlName]="'name'">
+          </mat-form-field>
 
-      <mat-action-row>
-        <button *ngIf="!first" mat-button color="warn" (click)="prevStep()">Previous</button>
-        <button *ngIf="!last" mat-button color="primary" (click)="nextStep()">Next</button>
-      </mat-action-row>
-    </mat-expansion-panel>  
-  </mat-accordion>
+          <mat-form-field>
+            <mat-label>Pause</mat-label>
+            <input matInput [formControlName]="'pause'">
+            <span matTextSuffix>Sek.</span>
+          </mat-form-field>
+        </form>
+      </mat-expansion-panel>  
+    </mat-accordion>
+
+    <div style="height:16px"></div>
+
+    <form [formGroup]="exercisesForm">
+      <mat-accordion class="example-headers-align" [formArrayName]="'exercises'">
+        <mat-expansion-panel 
+          *ngFor="let exercise of exercises$ | async; let first = first; let last = last; index as i" 
+          [expanded]="step === exercise.data().order" 
+          (opened)="setStep(exercise.data().order)" 
+          [formGroupName]="i">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{exercise.data().name}}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <div class="exercise-form">
+            <mat-form-field>
+              <mat-label>Name</mat-label>
+              <input matInput required [formControlName]="'name'">
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Tempo</mat-label>
+              <input matInput [formControlName]="'tempo'">
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>ROM</mat-label>
+              <input matInput [formControlName]="'rom'">
+            </mat-form-field>
+          </div>
+        
+          <app-exercise-table [formControlName]="'sets'"></app-exercise-table>
+
+          <mat-action-row>
+            <button mat-icon-button (click)="openDeleteDialog(exercise)"><mat-icon>delete</mat-icon></button>
+          </mat-action-row>
+        </mat-expansion-panel>  
+      </mat-accordion>
+
+      <button 
+        class="add-button" 
+        mat-fab color="primary" 
+        #tooltip="matTooltip"
+        matTooltip="Übung hinzufügen"
+        [matTooltipPosition]="'left'"
+        (click)="openCreateDialog()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </form>
+  </div>
 </div>

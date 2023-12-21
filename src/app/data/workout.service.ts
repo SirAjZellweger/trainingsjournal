@@ -1,27 +1,34 @@
 import { Injectable, inject } from "@angular/core";
 import { UserDataService } from "./user-data.service";
-import { BehaviorSubject, Observable, map, switchMap, tap } from "rxjs";
+import { BehaviorSubject, Observable, ReplaySubject, map, share, switchMap, take, tap, withLatestFrom } from "rxjs";
 import { AngularFirestoreDocument, QueryDocumentSnapshot } from "@angular/fire/compat/firestore";
 import { Workout } from "./interfaces/workout";
+import { ActivatedRoute } from "@angular/router";
+import { Exercise } from "./interfaces/exercise";
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class WorkoutService {
+  private readonly route = inject(ActivatedRoute);
   private readonly userDataService = inject(UserDataService)
+
+  private readonly workoutKey$ = this.route.params.pipe(
+    map(p => p['id']),
+    share({connector: () => new ReplaySubject(1)})
+  );
 
   private readonly workoutsSubject = new BehaviorSubject<QueryDocumentSnapshot<Workout>[]>([]);
 
-  public getWorkoutData(key: string): Observable<Workout | undefined> {
-    return this.getWorkout(key).pipe(
+  public getWorkoutData(): Observable<Workout | undefined> {
+    return this.getWorkout().pipe(
       switchMap(workout => workout.ref.get()),
-      map(workout => workout.data())
+      map(workout => workout.data()),
     );
   }
 
-  public getWorkout(key: string): Observable<AngularFirestoreDocument<Workout>> {
+  public getWorkout(): Observable<AngularFirestoreDocument<Workout>> {
     return this.userDataService.getUserData().pipe(
-      map(userData => userData.collection<Workout>('workouts').doc(key)),
+      withLatestFrom(this.workoutKey$),
+      map(([userData, key]) => userData.collection<Workout>('workouts').doc(key)),
     );
   }
 
@@ -34,6 +41,13 @@ export class WorkoutService {
     );
   }
 
+  public getExerciseCount(key: string): Observable<number> {
+    return this.userDataService.getUserData().pipe(
+      switchMap(userData => userData.collection<Workout>('workouts').doc(key).collection<Exercise>('exercises').get()),
+      map(exercises => exercises.size),
+    );
+  }
+
   public getWorkouts(): Observable<QueryDocumentSnapshot<Workout>[]> {
     return this.workoutsSubject.asObservable();
   }
@@ -42,6 +56,12 @@ export class WorkoutService {
     return this.userDataService.getUserData().pipe(
       switchMap(userData => userData.collection('workouts').add({name: name})),
       map(workout => workout.id)
+    );
+  }
+
+  public editWorkout(workout: Workout): Observable<void> {
+    return this.getWorkout().pipe(
+      switchMap(w => w.set(workout)),
     );
   }
 

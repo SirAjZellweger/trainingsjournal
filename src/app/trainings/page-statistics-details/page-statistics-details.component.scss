@@ -1,0 +1,26 @@
+span.kg {
+  margin-left: 1rem;
+
+  &.positive {
+    color: green;
+  }
+  
+  &.negative {
+    color: orange;
+  }
+}
+
+.exercise-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 12px;
+}
+
+.label-value {
+  display: flex;
+  justify-content: space-between;
+}
+
+.workout-form mat-form-field {
+  width: 100%;
+}

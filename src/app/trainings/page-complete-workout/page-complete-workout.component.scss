@@ -25,6 +25,11 @@
       padding: 12px;
     }
   }
+
+  mat-toolbar span{
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
 }
 
 .mat-column-set {
@@ -37,4 +42,22 @@
 
 mat-form-field {
   width: 100%
+}
+
+.exercise-form {
+  display: grid;
+  grid-template-columns: 2fr 2fr 3fr;
+  column-gap: 12px;
+  align-items: center;
+}
+
+.navigation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 12px;
+  margin-top: 12px;
+
+  .next {
+    grid-column-start: 2;
+  }
 }

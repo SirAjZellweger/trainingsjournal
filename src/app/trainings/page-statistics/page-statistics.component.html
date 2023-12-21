@@ -1,0 +1,32 @@
+<div *ngIf="workout$ | async as workout">
+  <mat-toolbar [color]="'primary'">
+    <a mat-icon-button [routerLink]="'/trainings'"><mat-icon>arrow_back</mat-icon></a>
+    <span>"{{workout.name}}" auswerten</span>
+  </mat-toolbar>
+
+  <table mat-table [dataSource]="completions$" class="mat-elevation-z8">
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef> Datum </th>
+      <td mat-cell *matCellDef="let element"> 
+        {{element.data().start.toDate() | date : 'd.M.yyyy'}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="duration">
+      <th mat-header-cell *matHeaderCellDef> Dauer </th>
+      <td mat-cell *matCellDef="let element">
+        {{getDuration(element.data().start.toDate(), element.data().end.toDate())}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="details">
+      <th mat-header-cell *matHeaderCellDef> Details </th>
+      <td mat-cell *matCellDef="let element"> 
+        <a mat-icon-button [routerLink]="['details', element.id]"><mat-icon>arrow_forward</mat-icon></a>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

@@ -17,17 +17,21 @@ import { PageLoginComponent } from "./auth/page-login/page-login.component";
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from "@angular/material/snack-bar";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { PageEditWorkoutComponent } from "./trainings/page-edit-workout/page-edit-workout.component";
+import { PageStatisticsComponent } from "./trainings/page-statistics/page-statistics.component";
+import { PageStatisticsDetailsComponent } from "./trainings/page-statistics-details/page-statistics-details.component";
 
 const redirectAuthorizedToHome = () => redirectLoggedInTo(['']);
-const redirectUnauthorizedToHome = () => redirectUnauthorizedTo(['']);
+const redirectUnauthorizedToHome = () => redirectUnauthorizedTo(['/login']);
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: '' },
+  { path: '', pathMatch: 'full', redirectTo: '/trainings' },
   { path: 'login', component: PageLoginComponent , ...canActivate(redirectAuthorizedToHome)},
   { path: 'trainings', component: PageTrainingsComponent, loadChildren: () => TRAINING_ROUTES , ...canActivate(redirectUnauthorizedToHome)},
   { path: 'trainings/edit/:id', component: PageEditWorkoutComponent, loadChildren: () => TRAINING_ROUTES , ...canActivate(redirectUnauthorizedToHome)},
-  { path: 'complete-workout', component: PageCompleteWorkoutComponent , ...canActivate(redirectUnauthorizedToHome)},
-  { path: 'settings', component: PageSettingsComponent, loadChildren: () => SETTING_ROUTES, ...canActivate(redirectUnauthorizedToHome) },
+  { path: 'trainings/complete/:id', component: PageCompleteWorkoutComponent , ...canActivate(redirectUnauthorizedToHome)},
+  { path: 'trainings/statistics/:id', component: PageStatisticsComponent , ...canActivate(redirectUnauthorizedToHome)},
+  { path: 'trainings/statistics/:id/details/:cid', component: PageStatisticsDetailsComponent , ...canActivate(redirectUnauthorizedToHome)},
+  // { path: 'settings', component: PageSettingsComponent, loadChildren: () => SETTING_ROUTES, ...canActivate(redirectUnauthorizedToHome) },
   { path: '**', redirectTo: ''}
 ];
 

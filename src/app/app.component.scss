@@ -13,11 +13,16 @@ mat-toolbar {
   }
 }
 
-mat-drawer-container{
-  margin-top: 56px;
-}
+// mat-drawer-container{
+//   margin-top: 56px;
+// }
 
 .page {
   // padding: 3rem;
-  min-height: calc(100vh - 56px);
+  margin-top: 56px;
+
+  @media screen and (min-width: 600px) {
+    margin-top: 64px;
+  }
+  // min-height: calc(100vh - 56px);
 }

@@ -1,3 +1,16 @@
+.page {
+  padding: 1rem;
+  display: grid;
+  row-gap: 2rem;
+  max-width: 500px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.button-google {
+  margin-top: 11px;
+}
+
 form {
   display: grid;
 }

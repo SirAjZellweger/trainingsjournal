@@ -1,26 +1,20 @@
-<div class="cards">
-  <mat-card *ngFor="let workout of workouts$ | async">
-    <mat-card-header>
-      <mat-card-title>{{workout.data().name}}</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      {{workout.data() | json}}
-      <mat-divider></mat-divider>
-    </mat-card-content>
-    <mat-card-actions [align]="'end'">
-      <a mat-icon-button [routerLink]="['edit', workout.id]"><mat-icon>edit</mat-icon></a>
-      <button mat-icon-button (click)="openDeleteDialog(workout)"><mat-icon>delete</mat-icon></button>
-      <button mat-icon-button [color]="'primary'" ><mat-icon>play_circle_filled</mat-icon></button>
-    </mat-card-actions>
-  </mat-card>
-</div>
+<mat-toolbar [color]="'primary'">
+  <span></span>
+  <span>Trainingspläne</span>
+  <span></span>
+</mat-toolbar>
+<div class="page">
+  <div class="cards">
+    <app-card-training *ngFor="let workout of workouts$ | async" [workout]="workout" (deleted)="refreshWorkouts.emit()"></app-card-training>
+  </div>
 
-<button 
-  class="add-button" 
-  mat-fab color="primary" 
-  #tooltip="matTooltip"
-  matTooltip="Neues Training erstellen"
-  [matTooltipPosition]="'left'"
-  (click)="openCreateDialog()">
-  <mat-icon>add</mat-icon>
-</button>
+  <button 
+    class="add-button" 
+    mat-fab color="primary" 
+    #tooltip="matTooltip"
+    matTooltip="Neues Training erstellen"
+    [matTooltipPosition]="'left'"
+    (click)="openCreateDialog()">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>

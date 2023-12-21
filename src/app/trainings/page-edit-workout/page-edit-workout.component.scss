@@ -1,0 +1,33 @@
+.add-button {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem; 
+}
+
+::ng-deep mat-toolbar {
+  justify-content: space-between;
+}
+
+.content {
+  padding: .5rem;
+
+  mat-accordion {
+    margin-bottom: 32px;
+  }
+}
+
+.workout-form {
+  display: grid;
+  grid-template-columns: 70% 30%;
+  column-gap: 12px;
+}
+
+.exercise-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 12px;
+
+  mat-form-field:first-child {
+    grid-column: span 2;
+  }
+}

@@ -1,31 +1,21 @@
 import { Injectable, inject } from "@angular/core";
 import { UserDataService } from "./user-data.service";
-import { BehaviorSubject, Observable, map, switchMap, tap } from "rxjs";
+import { BehaviorSubject, Observable, ReplaySubject, map, share, switchMap, tap } from "rxjs";
 import { AuthService } from "../auth/auth.service";
 import { AngularFirestore, QueryDocumentSnapshot } from "@angular/fire/compat/firestore";
 import { Workout } from "./interfaces/workout";
 import { Exercise } from "./interfaces/exercise";
 import { WorkoutService } from "./workout.service";
+import { ActivatedRoute } from "@angular/router";
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class ExerciseService {
-  private readonly db = inject(AngularFirestore);
-  private readonly authService = inject(AuthService);
   private readonly workoutService = inject(WorkoutService)
 
   private readonly exercisesSubject = new BehaviorSubject<QueryDocumentSnapshot<Exercise>[]>([]);
 
-  public getWorkout(key: string): Observable<any> {
-    return this.authService.user$.pipe(
-      switchMap(user => this.db.collection('users').doc(user?.uid).collection('workouts').doc(key).ref.get()),
-      map(workout => workout.data())
-    );
-  }
-
-  public fetchExercises(workoutKey: string): Observable<QueryDocumentSnapshot<Exercise>[]> {
-    return this.workoutService.getWorkout(workoutKey).pipe(
+  public fetchExercises(): Observable<QueryDocumentSnapshot<Exercise>[]> {
+    return this.workoutService.getWorkout().pipe(
       switchMap(workout => workout.collection<Exercise>('exercises').get()),
       map(exercises => exercises.docs),
       tap(exercises => this.exercisesSubject.next(exercises)),
@@ -37,16 +27,30 @@ export class ExerciseService {
     return this.exercisesSubject.asObservable();
   }
 
-  public createWorkout(name: string): Observable<string> {
-    return this.authService.user$.pipe(
-      switchMap(user => this.db.collection('users').doc(user?.uid).collection('workouts').add({name: name})),
-      map(workout => workout.id)
+  public createExercise(name: string, order: number): Observable<string> {
+    const exercise: Exercise = {
+      name: name,
+      order: order,
+      sets: [
+        {order: 1, weight: null, reps: null},
+      ]
+    };
+
+    return this.workoutService.getWorkout().pipe(
+      switchMap(workout => workout.collection('exercises').add(exercise)),
+      map(exercise => exercise.id)
     );
   }
 
-  public deleteWorkout(key: string): Observable<void> {
-    return this.authService.user$.pipe(
-      switchMap(user => this.db.collection('users').doc(user?.uid).collection('workouts').doc(key).ref.delete()),
+  public editExercise(exercise: Exercise): Observable<void> {
+    return this.workoutService.getWorkout().pipe(
+      switchMap(workout => workout.collection('exercises').doc(exercise.key).set(exercise)),
+    );
+  }
+
+  public deleteExercise(key: string): Observable<void> {
+    return this.workoutService.getWorkout().pipe(
+      switchMap(workout => workout.collection('exercises').doc(key).ref.delete()),
     );
   }
 }

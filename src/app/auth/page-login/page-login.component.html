@@ -1,57 +1,61 @@
-<button mat-raised-button (click)="loginWithGoogle()">
-  Anmelden mit Google
-</button>
+<div class="page">
+  <form [formGroup]="loginForm">
+    <h2>Anmelden</h2>
+    <mat-form-field>
+      <mat-label>Email</mat-label>
+      <input type="email" matInput [formControlName]="'email'" [errorStateMatcher]="matcher" required>
+        <mat-error *ngIf="loginForm.controls.email.hasError('email') && !loginForm.controls.email.hasError('required')">
+          Bitte geben sie eine gültige Email-Adresse ein
+        </mat-error>
+        <mat-error *ngIf="loginForm.controls.email.hasError('required')">Email ist ein Pflichtfeld</mat-error>
+    </mat-form-field>
 
-<form [formGroup]="loginForm">
-  <mat-form-field>
-    <mat-label>Email</mat-label>
-    <input type="email" matInput [formControlName]="'email'" [errorStateMatcher]="matcher" required>
-      <mat-error *ngIf="loginForm.controls.email.hasError('email') && !loginForm.controls.email.hasError('required')">
-        Bitte geben sie eine gültige Email-Adresse ein
-      </mat-error>
-      <mat-error *ngIf="loginForm.controls.email.hasError('required')">Email ist ein Pflichtfeld</mat-error>
-  </mat-form-field>
+    <mat-form-field>
+      <mat-label>Passwort</mat-label>
+      <input type="password" matInput [formControlName]="'password'" [errorStateMatcher]="matcher" required>
+        <mat-error *ngIf="loginForm.controls.password.hasError('required')">Passwort ist ein Pflichtfeld</mat-error>
+    </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>Passwort</mat-label>
-    <input type="password" matInput [formControlName]="'password'" [errorStateMatcher]="matcher" required>
-      <mat-error *ngIf="loginForm.controls.password.hasError('required')">Passwort ist ein Pflichtfeld</mat-error>
-  </mat-form-field>
+    <button mat-raised-button [color]="'primary'" (click)="signInWithEmailAndPassword()" [disabled]="!!!(canSubmitLoginForm | async)">
+      Anmelden
+    </button>
 
-  <button mat-raised-button [color]="'primary'" (click)="signInWithEmailAndPassword()" [disabled]="!!!(canSubmitLoginForm | async)">
-    Anmelden
-  </button>
-</form>
+    <button class="button-google"mat-raised-button [color]="'primary'" (click)="loginWithGoogle()">
+      Mit Google anmelden
+    </button>
+  </form>
 
-<form [formGroup]="registerForm">
-  <mat-form-field>
-    <mat-label>Email</mat-label>
-    <input type="email" matInput [formControlName]="'email'" [errorStateMatcher]="matcher" required>
-      <mat-error *ngIf="registerForm.controls.email.hasError('email') && !registerForm.controls.email.hasError('required')">
-        Bitte geben sie eine gültige Email-Adresse ein
-      </mat-error>
-      <mat-error *ngIf="registerForm.controls.email.hasError('required')">Email ist ein Pflichtfeld</mat-error>
-  </mat-form-field>
+  <form [formGroup]="registerForm">
+    <h2>Registrieren</h2>
+    <mat-form-field>
+      <mat-label>Email</mat-label>
+      <input type="email" matInput [formControlName]="'email'" [errorStateMatcher]="matcher" required>
+        <mat-error *ngIf="registerForm.controls.email.hasError('email') && !registerForm.controls.email.hasError('required')">
+          Bitte geben sie eine gültige Email-Adresse ein
+        </mat-error>
+        <mat-error *ngIf="registerForm.controls.email.hasError('required')">Email ist ein Pflichtfeld</mat-error>
+    </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>Passwort</mat-label>
-    <input type="password" matInput [formControlName]="'password'" [errorStateMatcher]="matcher" required>
-      <mat-error *ngIf="registerForm.controls.passwordRepetition.hasError('mustMatch') && !registerForm.controls.password.hasError('required')">
-        Das Passwort muss mindestens 6 Zeichen lang sein
-      </mat-error>
-      <mat-error *ngIf="registerForm.controls.password.hasError('required')">Passwort ist ein Pflichtfeld</mat-error>
-  </mat-form-field>
+    <mat-form-field>
+      <mat-label>Passwort</mat-label>
+      <input type="password" matInput [formControlName]="'password'" [errorStateMatcher]="matcher" required>
+        <mat-error *ngIf="registerForm.controls.passwordRepetition.hasError('mustMatch') && !registerForm.controls.password.hasError('required')">
+          Das Passwort muss mindestens 6 Zeichen lang sein
+        </mat-error>
+        <mat-error *ngIf="registerForm.controls.password.hasError('required')">Passwort ist ein Pflichtfeld</mat-error>
+    </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>Passwort wiederholen</mat-label>
-    <input type="password" matInput [formControlName]="'passwordRepetition'" [errorStateMatcher]="matcher" required>
-      <mat-error *ngIf="registerForm.controls.passwordRepetition.hasError('mustMatch') && !registerForm.controls.passwordRepetition.hasError('required')">
-        Das Passwort stimmt nicht überein
-      </mat-error>
-      <mat-error *ngIf="registerForm.controls.passwordRepetition.hasError('required')">Passwort wiederholen ist ein Pflichtfeld</mat-error>
-  </mat-form-field>
+    <mat-form-field>
+      <mat-label>Passwort wiederholen</mat-label>
+      <input type="password" matInput [formControlName]="'passwordRepetition'" [errorStateMatcher]="matcher" required>
+        <mat-error *ngIf="registerForm.controls.passwordRepetition.hasError('mustMatch') && !registerForm.controls.passwordRepetition.hasError('required')">
+          Das Passwort stimmt nicht überein
+        </mat-error>
+        <mat-error *ngIf="registerForm.controls.passwordRepetition.hasError('required')">Passwort wiederholen ist ein Pflichtfeld</mat-error>
+    </mat-form-field>
 
-  <button mat-raised-button [color]="'primary'" (click)="createUserWithEmailAndPassword()" [disabled]="!!!(canSubmitRegisterForm | async)">
-    Registrieren
-  </button>
-</form>
+    <button mat-raised-button [color]="'primary'" (click)="createUserWithEmailAndPassword()" [disabled]="!!!(canSubmitRegisterForm | async)">
+      Registrieren
+    </button>
+  </form>
+</div>

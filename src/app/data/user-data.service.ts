@@ -35,4 +35,10 @@ export class UserDataService {
       map(user => this.db.collection('users').doc<UserData>(user?.uid)),
     );
   }
+
+  public deleteUserData(): Observable<void> {
+    return this.getUserData().pipe(
+      switchMap(user => user.ref.delete()),
+    );
+  }
 }

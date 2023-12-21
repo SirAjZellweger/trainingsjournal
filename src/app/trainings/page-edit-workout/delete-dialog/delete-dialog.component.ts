@@ -9,6 +9,8 @@ import { MatInputModule } from "@angular/material/input";
 import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
 import { ReplaySubject, filter, map, share, switchMap, take, tap } from "rxjs";
 import { AuthService } from "src/app/auth/auth.service";
+import { ExerciseService } from "src/app/data/exercise.service";
+import { Exercise } from "src/app/data/interfaces/exercise";
 import { Workout } from "src/app/data/interfaces/workout";
 import { UserDataService } from "src/app/data/user-data.service";
 import { WorkoutService } from "src/app/data/workout.service";
@@ -31,14 +33,13 @@ import { WorkoutService } from "src/app/data/workout.service";
 })
 export class DeleteDialogComponent {
   private readonly dialogRef = inject(MatDialogRef<DeleteDialogComponent>);
-  private readonly workoutService = inject(WorkoutService);
+  private readonly exerciseService = inject(ExerciseService);
   private readonly snackBar = inject(MatSnackBar);
-  protected readonly dialogData: QueryDocumentSnapshot<Workout> = inject(MAT_DIALOG_DATA);
+  protected readonly dialogData: QueryDocumentSnapshot<Exercise> = inject(MAT_DIALOG_DATA);
 
   protected delete(): void {
-    this.workoutService.deleteWorkout(this.dialogData.id).pipe(
-      take(1),
-      tap(() => this.snackBar.open('Training "' + this.dialogData.data().name + '" gelöscht')),
+    this.exerciseService.deleteExercise(this.dialogData.id).pipe(
+      tap(() => this.snackBar.open('Übung "' + this.dialogData.data().name + '" gelöscht')),
       tap(() => this.dialogRef.close(true))
     )
     .subscribe();

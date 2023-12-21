@@ -1,0 +1,15 @@
+<mat-card *ngIf="workout$ | async as workout">
+  <mat-card-header>
+    <mat-card-title>{{workout.data().name}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    Anzahl Übungen: {{exerciseCount$ | async}}
+    <mat-divider></mat-divider>
+  </mat-card-content>
+  <mat-card-actions [align]="'end'">
+    <a mat-icon-button [routerLink]="['statistics', workout.id]"><mat-icon>query_stats</mat-icon></a>
+    <a mat-icon-button [routerLink]="['edit', workout.id]"><mat-icon>edit</mat-icon></a>
+    <button mat-icon-button (click)="openDeleteDialog(workout)"><mat-icon>delete</mat-icon></button>
+    <button mat-icon-button [color]="'primary'" [routerLink]="['complete', workout.id]"><mat-icon>play_circle_filled</mat-icon></button>
+  </mat-card-actions>
+</mat-card>

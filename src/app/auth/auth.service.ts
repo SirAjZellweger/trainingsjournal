@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
-import { Auth, user, GoogleAuthProvider, signInWithPopup, UserCredential, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from '@angular/fire/auth';
+import { Auth, user, GoogleAuthProvider, signInWithPopup, UserCredential, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, deleteUser, User, reauthenticateWithCredential, AuthCredential, EmailAuthProvider } from '@angular/fire/auth';
 import { Auth as FirebaseAuth } from 'firebase/auth';
-import { NEVER, Observable, ReplaySubject, filter, from, map, take, tap } from 'rxjs';
+import { NEVER, Observable, ReplaySubject, filter, from, map, switchMap, take, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -36,5 +36,13 @@ export class AuthService {
     } else {
       return NEVER;
     }
+  }
+
+  public deleteUser(password: string): Observable<void> {
+    return this.user$.pipe(
+      switchMap(user => reauthenticateWithCredential(user as User, EmailAuthProvider.credential(user?.email as string, password))),
+      switchMap(userCredential => deleteUser(userCredential.user)),
+      take(1),
+    );
   }
 }
