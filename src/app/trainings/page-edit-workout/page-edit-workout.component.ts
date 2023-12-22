@@ -90,7 +90,12 @@ export class PageEditWorkoutComponent implements ComponentCanDeactivate {
 
   protected readonly exercises$ = this.exerciseService.fetchExercises().pipe(
     map(exercises => exercises.sort((a,b) => a.data().order - b.data().order)),
-    tap(exercises => exercises.forEach(e => this.exercisesForm.controls.exercises.push(this.buildExerciseFormGroup(e.id, e.data()) as never))),
+    tap(exercises => exercises.forEach(e => {
+        if(this.exercisesForm.controls.exercises.controls.findIndex(ec => (ec as FormGroup).controls['key'].value === e.id) === -1) {
+          this.exercisesForm.controls.exercises.push(this.buildExerciseFormGroup(e.id, e.data()) as never);
+        }
+      })
+    ),
     share({connector: () => new ReplaySubject(1)})
   );
 
